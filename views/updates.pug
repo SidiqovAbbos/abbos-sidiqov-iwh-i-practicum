@@ -1,0 +1,27 @@
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/css/style.css')
+  body
+    h1 Contact Details
+    a(href="/") Return to the homepage
+    form(action="/update-cobj", method="POST")
+      div
+        input(type="hidden", name="id", id="id", value=contact.id, required)
+      div
+        label(for="email") Email:
+        input(type="email", name="email", id="email", value=contact.email, required)
+      div
+        label(for="favorite_book") Favorite Book:
+        input(type="text", name="favorite_book", id="favorite_book", value=contact.favorite_book, required)
+      div
+        label Is Married: 
+          input(type="checkbox", name="is_married", id="is_married", checked=contact.is_married === "true")
+      div
+        label(for="languages") Languages:
+        select(name="languages", id="languages", multiple)
+          - var languages = ['English', 'Spanish', 'Arabian', 'Russia', 'Other']
+            each item in languages
+                option(value=item, selected=contact.languages.includes(item)) #{item}
+ 
+      button(type="submit") Create Contact

@@ -1,0 +1,26 @@
+doctype html
+html 
+    head 
+        title= `${title}`
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="/css/style.css")
+    body
+        h1 Contact list 
+        a(href="/update-cobj") Create New Contact
+        table.contact-table
+            thead
+            tr
+                th.table-header Email
+                th.table-header Favorite Book
+                th.table-header Is Married
+                th.table-header Languages
+                th.table-header
+            tbody
+            each contact in contacts
+                tr.table-row
+                td.table-cell #{contact.email}
+                td.table-cell #{contact.favorite_book}
+                td.table-cell #{contact.is_married}
+                td.table-cell #{contact.languages}
+                td.table-cell
+                    a(href=`/update-cobj?id=${contact.id}`) Update
