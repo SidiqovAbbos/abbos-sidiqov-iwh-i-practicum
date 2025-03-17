@@ -12,20 +12,14 @@ app.use(express.json());
 
 // * Please DO NOT INCLUDE the private app access token in your repo. Don't do this practicum in your normal account.
 const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_KEY;
-const contactProperties = [
-  "email",
-  "favorite_book",
-  "is_married",
-  "languages",
-  "hs_object_id",
-]
+const contactProperties = ["name", "description", "price", "hs_object_id"]
   .map((property) => `properties=${property}`)
   .join("&");
 
 // TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
 app.get("/", async (req, res) => {
-  const contactsUrl = `https://api.hubspot.com/crm/v3/objects/contacts?${contactProperties}`;
+  const contactsUrl = `https://api.hubspot.com/crm/v3/objects/cars?${contactProperties}`;
   const headers = {
     Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
     "Content-Type": "application/json",
@@ -34,18 +28,16 @@ app.get("/", async (req, res) => {
   try {
     const resp = await axios.get(contactsUrl, { headers });
     const data = resp.data.results;
-    const contacts = data.map((contact) => ({
+    const cars = data.map((contact) => ({
       id: contact.properties.hs_object_id,
-      email: contact.properties.email,
-      favorite_book: contact.properties.favorite_book,
-      is_married: contact.properties.is_married
-        ? contact.properties.is_married === "true"
-          ? "Yes"
-          : "No"
-        : "",
-      languages: contact.properties.languages,
+      name: contact.properties.name,
+      description: contact.properties.description,
+      price: contact.properties.price,
     }));
-    res.render("homepage", { title: "Contact list | HubSpot APIs", contacts });
+    res.render("homepage", {
+      title: "Contact list | HubSpot APIs",
+      cars,
+    });
   } catch (error) {
     console.error(error);
   }
@@ -59,36 +51,34 @@ app.get("/update-cobj", async (req, res) => {
   if (!contactId) {
     res.render("updates", {
       title: "Contact Details | HubSpot APIs",
-      contact: {
+      car: {
         id: "",
-        email: "",
-        favorite_book: "",
-        is_married: "",
-        languages: "",
+        name: "",
+        description: "",
+        price: 0,
       },
     });
     return;
   }
 
   try {
-    const contactUrl = `https://api.hubspot.com/crm/v3/objects/contacts/${contactId}?${contactProperties}`;
+    const contactUrl = `https://api.hubspot.com/crm/v3/objects/cars/${contactId}?${contactProperties}`;
     const headers = {
       Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
       "Content-Type": "application/json",
     };
 
     const result = await axios.get(contactUrl, { headers });
-    const contact = {
+    const car = {
       id: result.data.properties.hs_object_id,
-      email: result.data.properties.email,
-      favorite_book: result.data.properties.favorite_book || "",
-      is_married: result.data.properties.is_married || "",
-      languages: result.data.properties.languages || "",
+      name: result.data.properties.name,
+      description: result.data.properties.description || "",
+      price: result.data.properties.price || "",
     };
 
     res.render("updates", {
       title: "Contact Details | HubSpot APIs",
-      contact,
+      car,
     });
   } catch (error) {
     console.error(error);
@@ -99,21 +89,17 @@ app.get("/update-cobj", async (req, res) => {
 
 app.post("/update-cobj", async (req, res) => {
   const contactId = req.body.id;
-  console.log(req.body);
   const contactData = {
     properties: {
-      email: req.body.email,
-      favorite_book: req.body.favorite_book,
-      is_married: req.body.is_married ? "true" : "false",
-      languages: Array.isArray(req.body.languages)
-        ? req.body.languages.join(";")
-        : req.body.languages,
+      name: req.body.name,
+      description: req.body.description,
+      price: parseFloat(req.body.price) || 0,
     },
   };
 
   const requestUrl = !contactId
-    ? `https://api.hubspot.com/crm/v3/objects/contacts`
-    : `https://api.hubspot.com/crm/v3/objects/contacts/${contactId}`;
+    ? `https://api.hubspot.com/crm/v3/objects/cars`
+    : `https://api.hubspot.com/crm/v3/objects/cars/${contactId}`;
 
   const headers = {
     Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,

@@ -3,25 +3,19 @@ html
     title= title
     link(rel='stylesheet', href='/css/style.css')
   body
-    h1 Contact Details
+    h1 Car Details
     a(href="/") Return to the homepage
     form(action="/update-cobj", method="POST")
       div
-        input(type="hidden", name="id", id="id", value=contact.id, required)
+        input(type="hidden", name="id", id="id", value=car.id, required)
       div
-        label(for="email") Email:
-        input(type="email", name="email", id="email", value=contact.email, required)
+        label(for="name") Name:
+        input(type="text", name="name", id="name", value=car.name, required)
       div
-        label(for="favorite_book") Favorite Book:
-        input(type="text", name="favorite_book", id="favorite_book", value=contact.favorite_book, required)
+        label(for="description") Description:
+        input(type="text", name="description", id="description", value=car.description)
       div
-        label Is Married: 
-          input(type="checkbox", name="is_married", id="is_married", checked=contact.is_married === "true")
-      div
-        label(for="languages") Languages:
-        select(name="languages", id="languages", multiple)
-          - var languages = ['English', 'Spanish', 'Arabian', 'Russia', 'Other']
-            each item in languages
-                option(value=item, selected=contact.languages.includes(item)) #{item}
+        label(for="price") Price:
+        input(type="number", name="price", id="price", value=car.price)
  
-      button(type="submit") Create Contact
+      button(type="submit") Save Changes

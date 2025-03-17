@@ -5,22 +5,20 @@ html
         meta(name="viewport" content="width=device-width, initial-scale=1")
         link(rel="stylesheet", href="/css/style.css")
     body
-        h1 Contact list 
-        a(href="/update-cobj") Create New Contact
+        h1 Custom Object Table 
+        a(href="/update-cobj") Create New Car
         table.contact-table
             thead
             tr
-                th.table-header Email
-                th.table-header Favorite Book
-                th.table-header Is Married
-                th.table-header Languages
+                th.table-header Name
+                th.table-header Description
+                th.table-header Price
                 th.table-header
             tbody
-            each contact in contacts
+            each car in cars
                 tr.table-row
-                td.table-cell #{contact.email}
-                td.table-cell #{contact.favorite_book}
-                td.table-cell #{contact.is_married}
-                td.table-cell #{contact.languages}
-                td.table-cell
-                    a(href=`/update-cobj?id=${contact.id}`) Update
+                    td.table-cell #{car.name}
+                    td.table-cell #{car.description}
+                    td.table-cell #{car.price}
+                    td.table-cell
+                        a(href=`/update-cobj?id=${car.id}`) Update
